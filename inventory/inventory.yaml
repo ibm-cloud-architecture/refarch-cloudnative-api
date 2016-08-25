@@ -1,0 +1,172 @@
+swagger: '2.0'
+info:
+  x-ibm-name: inventory
+  title: inventory
+  version: 1.0.0
+schemes:
+  - https
+host: $(catalog.host)
+basePath: /api
+consumes:
+  - application/json
+produces:
+  - application/json
+securityDefinitions:
+  clientIdHeader:
+    type: apiKey
+    in: header
+    name: X-IBM-Client-Id
+  clientSecretHeader:
+    in: header
+    name: X-IBM-Client-Secret
+    type: apiKey
+security:
+  - clientIdHeader: []
+x-ibm-configuration:
+  testable: true
+  enforced: true
+  cors:
+    enabled: true
+  catalogs:
+    apic-dev:
+      properties:
+        runtime-url: $(TARGET_URL)
+    sb:
+      properties:
+        runtime-url: 'http://localhost:4001'
+  assembly:
+    execute:
+      - invoke:
+          target-url: $(TARGET_HOST)$(request.path)
+  properties:
+    TARGET_HOST:
+      value: 'http://localhost:3000'
+      description: ''
+      encoded: false
+paths:
+  '/items/{id}':
+    get:
+      responses:
+        '200':
+          description: 200 OK
+          schema:
+            $ref: '#/definitions/item'
+      tags:
+        - item
+      summary: Find a model instance by id from the data source.
+      operationId: item.findById
+      parameters:
+        - name: id
+          type: string
+          required: true
+          in: path
+          description: Model id
+    delete:
+      responses:
+        '200':
+          description: 200 OK
+      tags:
+        - item
+      summary: Delete a model instance by id from the data source.
+      operationId: item.deleteById
+      parameters:
+        - name: id
+          type: string
+          required: true
+          in: path
+    put:
+      responses:
+        '200':
+          description: 200 OK
+      tags:
+        - item
+      summary: >-
+        Update attributes for a model instance and persist it into the data
+        source.
+      operationId: item.prototype.updateAttributes
+      parameters:
+        - name: data
+          required: false
+          in: body
+          schema:
+            $ref: '#/definitions/item'
+        - name: id
+          type: string
+          required: true
+          in: path
+          description: Model id
+  /items:
+    get:
+      responses:
+        '200':
+          description: 200 OK
+          schema:
+            $ref: '#/definitions/items'
+      tags:
+        - item
+      summary: Find all instances
+      operationId: item.find
+    post:
+      responses:
+        '200':
+          description: 200 OK
+          schema:
+            $ref: '#/definitions/item'
+      tags:
+        - item
+      summary: >-
+        Create a new instance of the model and persist it into the backend data
+        source
+      operationId: item.create
+      parameters:
+        - name: data
+          required: false
+          in: body
+          schema:
+            $ref: '#/definitions/item'
+          description: Item input data
+tags:
+  - name: Users
+    description: Tags on all the user operations
+    externalDocs:
+      description: External information about Users
+      url: 'http://host/url-of-my-entire-set-of-tag-docs-for-this-tag'
+  - name: Routes
+    description: Tags on all the route operations
+    externalDocs:
+      description: External information about Routes
+      url: 'http://host/url-of-my-entire-set-of-tag-docs-for-this-tag'
+definitions:
+  items:
+    type: array
+    items:
+      $ref: '#/definitions/item'
+    description: Array of item
+  item:
+    properties:
+      description:
+        type: string
+        description: item description
+      id:
+        type: number
+        description: item ID
+        format: double
+      img:
+        type: string
+        description: item image location
+      img_alt:
+        type: string
+        description: item image title
+      name:
+        type: string
+        description: product name
+      price:
+        type: number
+        description: Item price
+        format: double
+      rating:
+        type: number
+        description: Item rating
+        format: double
+    additionalProperties: false
+    description: JSON schema for item object

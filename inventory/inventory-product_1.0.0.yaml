@@ -1,0 +1,22 @@
+product: 1.0.0
+info:
+  name: inventory-product
+  title: Inventory Product
+  version: 1.0.0
+visibility:
+  view:
+    type: public
+  subscribe:
+    type: authenticated
+plans:
+  default:
+    title: Default Plan
+    description: Default Plan
+    approval: false
+    rate-limits:
+      per-minute:
+        value: 100/minute
+        hard-limit: false
+apis:
+  inventory:
+    $ref: inventory.yaml
