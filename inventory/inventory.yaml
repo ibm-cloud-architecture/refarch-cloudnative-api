@@ -45,6 +45,16 @@ x-ibm-configuration:
       encoded: false
   gateway: datapower-gateway
 paths:
+  '/image/{file}':
+    get:
+      responses:
+        '200':
+          description: 200 OK
+      parameters:
+        - name: file
+          type: string
+          required: true
+          in: path
   '/items/{id}':
     get:
       responses:
