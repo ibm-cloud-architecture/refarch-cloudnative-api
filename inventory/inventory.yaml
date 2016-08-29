@@ -55,6 +55,7 @@ paths:
           type: string
           required: true
           in: path
+      security: []
   '/items/{id}':
     get:
       responses:
