@@ -2,7 +2,7 @@ product: 1.0.0
 info:
   name: inventory-product
   title: Inventory Product
-  version: 1.0.0
+  version: 0.0.1
 visibility:
   view:
     type: public

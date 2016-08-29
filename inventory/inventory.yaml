@@ -2,7 +2,7 @@ swagger: '2.0'
 info:
   x-ibm-name: inventory
   title: inventory
-  version: 1.0.0
+  version: 0.0.1
 schemes:
   - https
 host: $(catalog.host)
@@ -40,9 +40,10 @@ x-ibm-configuration:
           target-url: $(TARGET_HOST)$(request.path)
   properties:
     TARGET_HOST:
-      value: 'http://localhost:3000'
+      value: 'https://inventory-bff-app.mybluemix.net'
       description: ''
       encoded: false
+  gateway: datapower-gateway
 paths:
   '/items/{id}':
     get:
