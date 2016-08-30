@@ -1,4 +1,4 @@
-# API lifecycle management with IBM API Connect on Bluemix
+# API publication with IBM API Connect on Bluemix
 
 *This project is part of the 'IBM Cloud Native Reference Architecture' suite, available at
 https://github.com/ibm-cloud-architecture/refarch-cloudnative*
@@ -58,8 +58,8 @@ This will deploy the inventory APIs to Bluemix API Connect runtime.
 You need to deploy the SocialReview APIs as well. You need to change the root directory to socialreview-bff-app:
 
   `$ cd ../../refarch-cloudnative-bff-socialreview`  
-  `apic config:set catalog=apic-catalog://us.apiconnect.ibmcloud.com/orgs/centusibmcom-cloudnative-dev/catalogs/bluecompute`  
-  `apic publish definitions/socialreview-product.yaml`  
+  `$ apic config:set catalog=apic-catalog://us.apiconnect.ibmcloud.com/orgs/centusibmcom-cloudnative-dev/catalogs/bluecompute`  
+  `$ apic publish definitions/socialreview-product.yaml`  
 
 
 This will publish the SocialReview API to Bluemix API Connect.
