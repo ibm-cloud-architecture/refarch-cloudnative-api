@@ -40,7 +40,7 @@ x-ibm-configuration:
           target-url: $(TARGET_HOST)$(request.path)
   properties:
     TARGET_HOST:
-      value: 'https://inventory-bff-app.mybluemix.net'
+      value: 'https://microservices-refapp-zuul-chrisking.mybluemix.net/'
       description: ''
       encoded: false
   gateway: datapower-gateway
