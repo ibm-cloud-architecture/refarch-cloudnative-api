@@ -63,4 +63,26 @@ You need to deploy the SocialReview APIs as well. You need to change the root di
 
 
 This will publish the SocialReview API to Bluemix API Connect.
-Next, you need to integrate the Mobile and Web BlueCompute applications with APIs.
+Next, you need to subscribe to the APIs via API Connect DeveloperPortal so that the Mobile and Web BlueCompute applications can use the APIs.
+
+## Subscribe to the APIs in the Developer Portal
+
+The API Connect Developer Portal enables API providers to build a customized consumer portal for their application developers. It also provides the interface for API consumers to discover APIs and subscribe to a consumption plan by which the API is consumed in either the Mobile or traditional Web application.
+
+1. Open the API Connect Developer Portal. You will need to open your Portal URL. Obtain it by navigating to the ApicStore catalog from the Bluemix API manager console. Click "Settings", then "Portal". ![API Running](static/imgs/bluemix_15.png?raw=true)  
+2. Open the API Connnect Portal in another browser window. You should see the portal home page with both the inventory and the socialreviews APIs highlighted.  
+3. Click "Create an account" from the upper right menu bar.  
+4. In the create an account wizard, enter the credentials of your Bluemix login ID and MobileWeb-App-Dev as your developer organization. Finally click "Create new account"  
+5. In your developer portal, click "Login".  
+6. Click on the menu tab "Apps" on top. Click on the link to "Register a new Application."  
+![API Running](static/imgs/bluemix_16.png?raw=true)  
+7. Enter the fields of "Title" and "Description". Enter "**org.apic://example.com**" for the OAuth URI redirection page as shown below then click submit.  
+![API Running](static/imgs/bluemix_17.png?raw=true) ( Store the client ID, you will need it later)  
+8. In the developer portal, navigate to Apps -> MobileWeb-App-Dev. Below the application, you will see a link to take you to the currently available APIs. Click on that.  
+9. Click on the Inventory ( V1.0.0 ) API.  
+10. Click "Subscribe" in the API page.  
+![API Running](static/imgs/bluemix_18.png?raw=true)   
+11. Subscribe to the social review API as well ( you can choose the silver or gold plan)  
+12. Go back to the Apps -> BlueCompute-Mobile page, you will see that both APIs are subscribed in your Application page.  
+
+Now, the APIs are ready to be consumed by the BlueCompute Mobile and Web applications. 
