@@ -49,7 +49,7 @@ Once you have the key, locate the definition **- set: "hs256-key"** in the inven
       value: "apic"
     - set: "hs256-key"
       value: "{ \"alg\": \"HS256\",   \"kty\": \"oct\",   \"use\": \"sig\",  \
-        \ \"k\": \"VOKJrRJ4UuKbioNd6nIHXCpYkHhxw6-0Im-AupSk9ATvUwF8wwWzLWKQZOMbke-Swo79eca4_QgCZNY0iYAKLgDfWf4lfZ9MmiAkJMVfEWt9pp9r7ycQT8WhkMtPVNULlvOI4RbhBq1dxQkY4A6-h_lVIFbxGF6uHo8KpmwM1jAWxRvKYYu0VbTYOBjQWuakS7dIq11_6maRoAEaLNWjigMKlQSeCP6kVKnpoEDxy1Rqw9sV4ttJjFDrqZRcwwIvNhqVc-eq1Ed-Uzev-HQVMTCDuHs8m0wPRNQYHP6M0fJNRae6tkhvxKEFwZKbco7om6F3VPE-xRyOT_HkpAU9HA\"\
+        \ \"k\": \"VOKJrRJ4UuKbioNd6nIHXCpYkHhxw6-0Im-AupSk9ATvUwF8wwWzLWKQZOMbke-xxxx\"\
         \ }"
     description: "Define JWT issuer claim"
 
