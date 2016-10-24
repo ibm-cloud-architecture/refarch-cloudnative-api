@@ -37,8 +37,35 @@ properties:
     encoded: false
 ```
 
-Save the file
+The solution uses JWT token to ensure only API Connect gateway can invoke Zuul proxied Microservices. Both the Inventory and SocialReview APIs are using the IBM API Connect jwt-generate activity to generate and sign the JWT token. We use HS256 algorithm and need a shared key in your API. A sample key has been provided in the git projects, but if you would like to get your own key, please follow [the security instruction](https://github.com/ibm-cloud-architecture/refarch-cloudnative/blob/master/static/security.md#generate-jwt-shared-key) to get the shared key.
 
+Once you have the key, locate the definition **- set: "hs256-key"** in the inventory.yaml file, then replace the **k** property with the key generated above:
+
+```
+- set-variable:
+    title: "set-variable"
+    actions:
+    - set: "bluecompute.iss.claim"
+      value: "apic"
+    - set: "hs256-key"
+      value: "{ \"alg\": \"HS256\",   \"kty\": \"oct\",   \"use\": \"sig\",  \
+        \ \"k\": \"VOKJrRJ4UuKbioNd6nIHXCpYkHhxw6-0Im-AupSk9ATvUwF8wwWzLWKQZOMbke-Swo79eca4_QgCZNY0iYAKLgDfWf4lfZ9MmiAkJMVfEWt9pp9r7ycQT8WhkMtPVNULlvOI4RbhBq1dxQkY4A6-h_lVIFbxGF6uHo8KpmwM1jAWxRvKYYu0VbTYOBjQWuakS7dIq11_6maRoAEaLNWjigMKlQSeCP6kVKnpoEDxy1Rqw9sV4ttJjFDrqZRcwwIvNhqVc-eq1Ed-Uzev-HQVMTCDuHs8m0wPRNQYHP6M0fJNRae6tkhvxKEFwZKbco7om6F3VPE-xRyOT_HkpAU9HA\"\
+        \ }"
+    description: "Define JWT issuer claim"
+
+```
+
+Save the file.
+
+You need to update the SocialReview APIs as well. You need to change the root directory to socialreview-bff-app:
+
+  `$ cd ../../refarch-cloudnative-bff-socialreview/socialreview/definitions`  
+
+Then, follow the same instructions above to update the socialreview.yaml file:
+- SocialReview TARGET_HOST field
+- hs256-key with key generated above
+
+Save the file.
 
 ## Deploy to Bluemix API Connect
 
@@ -85,4 +112,4 @@ The API Connect Developer Portal enables API providers to build a customized con
 11. Subscribe to the social review API as well ( you can choose the silver or gold plan)  
 12. Go back to the Apps -> BlueCompute-Mobile page, you will see that both APIs are subscribed in your Application page.  
 
-Now, the APIs are ready to be consumed by the BlueCompute Mobile and Web applications. 
+Now, the APIs are ready to be consumed by the BlueCompute Mobile and Web applications.
