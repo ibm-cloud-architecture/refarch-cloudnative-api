@@ -39,7 +39,7 @@ properties:
 
 The solution uses JWT token to ensure only API Connect gateway can invoke Zuul proxied Microservices. Both the Inventory and SocialReview APIs are using the IBM API Connect jwt-generate activity to generate and sign the JWT token. We use HS256 algorithm and need a shared key in your API. A sample key has been provided in the git projects, but if you would like to get your own key, please follow [the security instruction](https://github.com/ibm-cloud-architecture/refarch-cloudnative/blob/master/static/security.md#generate-jwt-shared-key) to get the shared key.
 
-Once you have the key, locate the definition **- set: "hs256-key"** in the inventory.yaml file, then replace the **k** property with the key generated above:
+Once you have the key, locate the definition **- set: "hs256-key"** in the inventory.yaml file, then replace the **k** property with the key generated above (replace the string VOKJrRJ4UuKbioNd6nIHXCpYkHhxw6-0Im-AupSk9ATvUwF8wwWzLWKQZOMbke-xxxx):
 
 ```
 - set-variable:
