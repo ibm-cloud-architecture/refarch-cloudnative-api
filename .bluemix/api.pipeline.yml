@@ -58,18 +58,20 @@ stages:
       echo "yes" | apic
       echo "no" | apic
 
-      # deploy api product
-      api_product="socialreview"
-      cd ${api_product}
-      echo -e "Set TARGET_HOST"
-      TARGET_HOST=$APP_NAME.$DOMAIN
-      sed -i -e "/^x\-ibm\-configuration\:$/,/^.*\:$ /{/properties\:$/,/$/{/TARGET\_HOST\:$/{N;s/\(value\:\)\(.*$\)/\1 \'https\:\/\/$TARGET_HOST\'/}}}" -e 's/\(\\ \\"k\\"\: \\"\)\(.*\)\(\\"\\\)/\1JSONWEBTOKENSHAREDSECRET\3/' -e "s/JSONWEBTOKENSHAREDSECRET/$JWT_SHARED_SECRET"/ ${api_product}.yaml
-      cat ${api_product}.yaml
+      # publish api product
+      ls -l|grep ^d|awk {'print $NF'}|while read api_product
+      do
+          cd ${api_product}
+          echo -e "Set TARGET_HOST"
+          TARGET_HOST=$APP_NAME.$DOMAIN
+          sed -i -e "/^x\-ibm\-configuration\:$/,/^.*\:$ /{/properties\:$/,/$/{/TARGET\_HOST\:$/{N;s/\(value\:\)\(.*$\)/\1 \'https\:\/\/$TARGET_HOST\'/}}}" -e 's/\(\\ \\"k\\"\: \\"\)\(.*\)\(\\"\\\)/\1JSONWEBTOKENSHAREDSECRET\3/' -e "s/JSONWEBTOKENSHAREDSECRET/$JWT_SHARED_SECRET"/ ${api_product}.yaml
+          cat ${api_product}.yaml
 
-      echo -e "Publish the ${api_product} api"
-      apic login -u $APIC_USER -p $APIC_PASS -s ${APIC_URL}
-      apic config:set catalog=apic-catalog://${APIC_URL}/orgs/${ORGS}/catalogs/bluecompute
-      apic publish ${api_product}-product_0.0.1.yaml
+          echo -e "Publish the ${api_product} api"
+          apic login -u $APIC_USER -p $APIC_PASS -s ${APIC_URL}
+          apic config:set catalog=apic-catalog://${APIC_URL}/orgs/${ORGS}/catalogs/bluecompute
+          apic publish ${api_product}-product_0.0.1.yaml
+      done
 
 - name: BUILD London
   inputs:
