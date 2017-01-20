@@ -71,7 +71,7 @@ stages:
           echo -e "Publish the ${api_product} api"
           apic login -u $APIC_USER -p $APIC_PASS -s ${APIC_URL}
           apic config:set catalog=apic-catalog://${APIC_URL}/orgs/${ORGS}/catalogs/bluecompute
-          apic publish ${api_product}-product_0.0.1.yaml
+          apic publish ${api_product}-product.yaml
       done
 
 - name: BUILD London
