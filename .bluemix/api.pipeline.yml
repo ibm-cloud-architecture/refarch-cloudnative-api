@@ -59,7 +59,8 @@ stages:
       echo "no" | apic
 
       # publish api product
-      ls -l|grep ^d|awk {'print $NF'}|while read api_product
+      #ls -l|grep ^d|awk {'print $NF'}|while read api_product
+      cat publish-list|while read api_product
       do
           cd ${api_product}
           echo -e "Set TARGET_HOST"
