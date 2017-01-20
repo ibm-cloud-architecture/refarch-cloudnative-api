@@ -1,0 +1,102 @@
+---
+swagger: "2.0"
+info:
+  x-ibm-name: "order"
+  title: "order"
+  version: "1.0.0"
+schemes:
+- "https"
+host: "$(catalog.host)"
+basePath: "/api"
+consumes:
+- "application/json"
+produces:
+- "application/json"
+securityDefinitions:
+  order oauth scope:
+    type: "oauth2"
+    description: ""
+    flow: "implicit"
+    authorizationUrl: "https://api.us.apiconnect.ibmcloud.com/centusibmcom-cloudnative-dev/bluecompute/oauth20/authorize"
+    scopes:
+      order: "view and create orders"
+  clientIdHeader:
+    type: "apiKey"
+    in: "header"
+    name: "X-IBM-Client-Id"
+security:
+- clientIdHeader: []
+x-ibm-configuration:
+  testable: true
+  enforced: true
+  cors:
+    enabled: true
+  assembly:
+    execute:
+    - invoke:
+        target-url: "$(target-url)$(request.path)"
+  phase: "realized"
+paths:
+  /order/{id}:
+    get:
+      responses:
+        200:
+          description: "200 OK"
+          schema:
+            $ref: "#/definitions/order"
+      description: "Get my order by ID"
+    parameters:
+    - name: "id"
+      type: "integer"
+      required: true
+      in: "path"
+      format: "int32"
+  /order:
+    get:
+      responses:
+        200:
+          description: "200 OK"
+          schema:
+            $ref: "#/definitions/order_array"
+      security:
+      - order oauth scope:
+        - "order"
+        clientIdHeader: []
+      description: "Get all my orders"
+    post:
+      responses:
+        200:
+          description: "200 OK"
+      parameters:
+      - name: "order"
+        required: true
+        in: "body"
+        schema:
+          $ref: "#/definitions/order"
+      security:
+      - order oauth scope:
+        - "order"
+        clientIdHeader: []
+      description: "Create an order"
+definitions:
+  order_array:
+    type: "array"
+    items:
+      $ref: "#/definitions/order"
+  order:
+    properties:
+      status:
+        type: "string"
+      date:
+        type: "string"
+        format: "date-time"
+      quantity:
+        type: "integer"
+        format: "int32"
+      customerId:
+        type: "string"
+      itemId:
+        type: "integer"
+        format: "int32"
+    additionalProperties: false
+tags: []
