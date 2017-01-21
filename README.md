@@ -3,6 +3,9 @@
 *This project is part of the 'IBM Cloud Native Reference Architecture' suite, available at
 https://github.com/ibm-cloud-architecture/refarch-cloudnative*
 
+### Deploy using Bluemix DevOps Continuous Delivery Toolchain
+[![api-toolchain](https://new-console.ng.bluemix.net/devops/graphics/create_toolchain_button.png)](https://new-console.ng.bluemix.net/devops/setup/deploy/?repository=https://github.com/ibm-cloud-architecture/refarch-cloudnative-api.git&branch=master)
+
 This project contains the API definition for Inventory applications. It documents the Inventory items services in OpenAPI format. It will then be published to API Connect instance on Bluemix. The APIs uses DataPower gateway to invoke the REST endpoint exposed by inventory-bff-app.
 
 The API definition is defined under the `inventory` folder.

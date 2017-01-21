@@ -1,0 +1,127 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Bluecompute Toolchain Deployment to Bluemix",
+    "description": "bluecompute toolchain",
+    "longDescription": "Information entered here will be used at deployment time.",
+    "type": "object",
+    "properties": {
+        "repo-branch": {
+            "description": "Git repo branch",
+            "type": "string"
+        },
+        "deploy-org": {
+            "description": "Deploy to this Bluemix Organization",
+            "type": "string"
+        },
+        "deploy-space": {
+            "description": "Deploy to this space",
+            "type": "string"
+        },
+        "deploy-region-us": {
+            "description": "Deploy to this US region",
+            "type": "string"
+        },
+        "deploy-region-eu": {
+            "description": "Deploy to this EU region",
+            "type": "string"
+        },
+        "route-domain-us": {
+            "description": "US Route Domain",
+            "type": "string"
+        },
+        "route-domain-eu": {
+            "description": "EU Route Domain",
+            "type": "string"
+        },
+        "apic-url-us": {
+            "description": "APIC US URL ",
+            "type": "string"
+        },
+        "apic-url-eu": {
+            "description": "APIC EU URL ",
+            "type": "string"
+        },
+        "apic-user": {
+            "description": "APIC username",
+            "type": "string"
+        },
+        "apic-pass": {
+            "description": "APIC password",
+            "type": "password"
+        },
+        "shared-secret": {
+            "description": "JWT shared secret. Use https://mkjwk.org/ to generate a secret. Switch to Shared Secret and use Key Size:2048, Key Use:signing, Algorithm:HS256",
+            "type": "string"
+        }
+    },
+    "required": [
+        "repo-branch",
+        "deploy-org",
+        "deploy-space",
+        "apic-user",
+        "apic-pass",
+        "shared-secret"
+        ],
+    "form": [
+        {
+            "type": "validator",
+            "url": "/devops/setup/bm-helper/helper.html"
+        },
+        {
+            "type": "text",
+            "readonly": false,
+            "title": "Git repo branch",
+            "key": "repo-branch"
+        },
+        {
+            "type": "text",
+            "readonly": false,
+            "title": "APIC Username",
+            "key": "apic-user"
+        },
+        {
+            "type": "password",
+            "readonly": false,
+            "title": "APIC Password",
+            "key": "apic-pass"
+        },
+        {
+            "type": "text",
+            "readonly": false,
+            "title": "JWT Shared Secret",
+            "key": "shared-secret"
+        },
+        {
+            "type": "table",
+            "columnCount": 3,
+            "widths": ["30%", "35%", "35%"],
+            "items": [
+                {
+                    "type": "label",
+                    "title": ""
+                },
+                {
+                    "type": "label",
+                    "title": "Organization"
+                },
+                {
+                    "type": "label",
+                    "title": "Space"
+                },
+                {
+                    "type": "label",
+                    "title": "Deploy to (in US-South and London)"
+                },
+                {
+                    "type": "select",
+                    "key": "deploy-org"
+                },
+                {
+                    "type": "select",
+                    "key": "deploy-space",
+                    "readonly": false
+                }
+            ]
+        }
+    ]
+}

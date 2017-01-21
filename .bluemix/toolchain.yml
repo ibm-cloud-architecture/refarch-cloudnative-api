@@ -1,0 +1,58 @@
+---
+name: "api toolchain"
+description: "deploy refarch-cloudnative-api"
+version: 0.1
+required:
+ - deploy
+
+git-api:
+  service_id: githubpublic
+  parameters:
+    repo_name: "refarch-cloudnative-api-{{name}}"
+    repo_url: "https://github.com/ibm-cloud-architecture/refarch-cloudnative-api"
+    type: clone
+    has_issues: true
+
+pipeline-api:
+  service_id: pipeline
+  hidden: [form, description]
+  parameters:
+    name: "api"
+    ui-pipeline: true
+    services: ["git-api"]
+    configuration:
+      content: $file(api.pipeline.yml)
+      env:
+       DOMAIN_US: "{{deploy.parameters.route-domain-us}}"
+       DOMAIN_EU: "{{deploy.parameters.route-domain-eu}}"
+       REPO: "git-api"
+       BRANCH: "{{deploy.parameters.repo-branch}}"
+       REGION_US: "{{deploy.parameters.deploy-region-us}}"
+       REGION_EU: "{{deploy.parameters.deploy-region-eu}}"
+       ORG: "{{deploy.parameters.deploy-org}}"
+       SPACE: "{{deploy.parameters.deploy-space}}"
+       NAME_US: "us-{{pipeline-bff-inventory.parameters.name}}-{{deploy.parameters.deploy-space}}"
+       NAME_EU: "eu-{{pipeline-bff-inventory.parameters.name}}-{{deploy.parameters.deploy-space}}"
+       APIC_URL_US: "{{deploy.parameters.apic-url-us}}"
+       APIC_URL_EU: "{{deploy.parameters.apic-url-eu}}"
+       APIC_USER: "{{deploy.parameters.apic-user}}"
+       APIC_PASS: "{{deploy.parameters.apic-pass}}"
+       JWT_SHARED_SECRET: "{{deploy.parameters.shared-secret}}"
+      execute: false
+
+deploy:
+  schema: deploy.json
+  service-category: pipeline
+  parameters:
+    repo-branch: "{{branch}}"
+    deploy-org: "{{organization}}"
+    deploy-space: "{{space}}"
+    deploy-region-us: "ibm:yp:us-south"
+    deploy-region-eu: "ibm:yp:eu-gb"
+    route-domain-us: "mybluemix.net"
+    route-domain-eu: "eu-gb.mybluemix.net"
+    apic-url-us: "us.apiconnect.ibmcloud.com"
+    apic-url-eu: "eu.apiconnect.ibmcloud.com"
+    apic-user: ""
+    apic-pass: ""
+    shared-secret: ""
