@@ -62,7 +62,7 @@ stages:
       #ls -l|grep ^d|awk {'print $NF'}|while read api_product
       cat publish-list|while read api_product
       do
-          cd ${api_product}
+          pushd ${api_product}
           echo -e "Set TARGET_HOST"
           TARGET_HOST=$APP_NAME.$DOMAIN
           sed -i -e "/^x\-ibm\-configuration\:$/,/^.*\:$ /{/properties\:$/,/$/{/TARGET\_HOST\:$/{N;s/\(value\:\)\(.*$\)/\1 \'https\:\/\/$TARGET_HOST\'/}}}" -e 's/\(\\ \\"k\\"\: \\"\)\(.*\)\(\\"\\\)/\1JSONWEBTOKENSHAREDSECRET\3/' -e "s/JSONWEBTOKENSHAREDSECRET/$JWT_SHARED_SECRET"/ ${api_product}.yaml
@@ -72,6 +72,7 @@ stages:
           apic login -u $APIC_USER -p $APIC_PASS -s ${APIC_URL}
           apic config:set catalog=apic-catalog://${APIC_URL}/orgs/${ORGS}/catalogs/bluecompute
           apic publish ${api_product}-product.yaml
+          popd
       done
 
 - name: BUILD London
