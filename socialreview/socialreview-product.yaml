@@ -16,3 +16,6 @@ plans:
     rate-limit:
       value: 100/hour
       hard-limit: false
+apis:
+  socialreview:
+    $ref: socialreview.yaml
