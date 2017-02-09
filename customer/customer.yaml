@@ -54,6 +54,7 @@ x-ibm-configuration:
         version: "1.0.0"
         jwt: "jwttoken"
         jws-jwk: "hs256-key"
+        jws-alg: "HS256"
         jwe-enc: "A128CBC-HS256"
         jwe-alg: "A256KW"
     - gatewayscript:
