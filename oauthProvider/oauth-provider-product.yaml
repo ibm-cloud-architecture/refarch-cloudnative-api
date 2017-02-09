@@ -17,7 +17,7 @@ visibility:
     orgs: []
 apis:
   oauth-provider:
-    $ref: "oauth-provider_1.0.0.yaml"
+    $ref: "oauth-provider.yaml"
 plans:
   default:
     title: "Default Plan"
