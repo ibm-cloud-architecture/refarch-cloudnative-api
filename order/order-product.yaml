@@ -17,7 +17,7 @@ visibility:
     orgs: []
 apis:
   order:
-    $ref: "order_1.0.0.yaml"
+    $ref: "order.yaml"
 plans:
   default:
     title: "Default Plan"

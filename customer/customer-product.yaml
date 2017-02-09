@@ -17,7 +17,7 @@ visibility:
     orgs: []
 apis:
   customer:
-    $ref: "customer_1.0.0.yaml"
+    $ref: "customer.yaml"
 plans:
   default:
     title: "Default Plan"
