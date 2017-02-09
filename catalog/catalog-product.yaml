@@ -17,7 +17,7 @@ visibility:
     orgs: []
 apis:
   catalog:
-    $ref: "catalog_1.0.0.yaml"
+    $ref: "catalog.yaml"
 plans:
   default:
     title: "Default Plan"
