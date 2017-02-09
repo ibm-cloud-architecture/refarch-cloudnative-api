@@ -33,16 +33,16 @@ securityDefinitions:
     type: "oauth2"
     description: "OAuth 2.0 authorization"
     flow: "implicit"
-    authorizationUrl: "https://api.us.apiconnect.ibmcloud.com/centusibmcom-cloudnative-dev/bluecompute/oauth20/authorize"
+    authorizationUrl: "https://api.us.apiconnect.ibmcloud.com/centusibmcom-jkwong-dev/bluecompute/oauth20/authorize"
     scopes:
-      review: "Allow user to post comment/reviews to Social review API"
+      blue: "bluecompute scope"
   clientIdHeader:
     type: "apiKey"
     in: "header"
     name: "X-IBM-Client-Id"
 security:
 - apic-oauth-provider:
-  - "review"
+  - "blue"
   clientIdHeader: []
 x-ibm-configuration:
   testable: true
