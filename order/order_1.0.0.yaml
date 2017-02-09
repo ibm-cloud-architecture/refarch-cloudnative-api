@@ -13,19 +13,21 @@ consumes:
 produces:
 - "application/json"
 securityDefinitions:
-  order oauth scope:
+  apic-oauth-provider:
     type: "oauth2"
     description: ""
     flow: "implicit"
     authorizationUrl: "https://api.us.apiconnect.ibmcloud.com/centusibmcom-cloudnative-dev/bluecompute/oauth20/authorize"
     scopes:
-      order: "view and create orders"
+      blue: "bluecompute scope"
   clientIdHeader:
     type: "apiKey"
     in: "header"
     name: "X-IBM-Client-Id"
 security:
 - clientIdHeader: []
+  apic-oauth-provider:
+  - "blue"
 x-ibm-configuration:
   testable: true
   enforced: true
@@ -33,11 +35,50 @@ x-ibm-configuration:
     enabled: true
   assembly:
     execute:
+    - set-variable:
+        title: "set-variable"
+        actions:
+        - set: "service-name"
+          value: "$(MICROSERVICE_NAME)"
+        - set: "bluecompute.iss.claim"
+          value: "apic"
+        - set: "hs256-key"
+          value: "{ \"alg\": \"HS256\",   \"kty\": \"oct\",   \"use\": \"sig\",  \
+            \ \"k\": \"VOKJrRJ4UuKbioNd6nIHXCpYkHhxw6-0Im-AupSk9ATvUwF8wwWzLWKQZOMbke-Swo79eca4_QgCZNY0iYAKLgDfWf4lfZ9MmiAkJMVfEWt9pp9r7ycQT8WhkMtPVNULlvOI4RbhBq1dxQkY4A6-h_lVIFbxGF6uHo8KpmwM1jAWxRvKYYu0VbTYOBjQWuakS7dIq11_6maRoAEaLNWjigMKlQSeCP6kVKnpoEDxy1Rqw9sV4ttJjFDrqZRcwwIvNhqVc-eq1Ed-Uzev-HQVMTCDuHs8m0wPRNQYHP6M0fJNRae6tkhvxKEFwZKbco7om6F3VPE-xRyOT_HkpAU9HA\"\
+            \ }"
+        version: "1.0.0"
+    - jwt-generate:
+        title: "jwt-generate"
+        iss-claim: "bluecompute.iss.claim"
+        exp-claim: 3600
+        version: "1.0.0"
+        jwt: "jwttoken"
+        jws-jwk: "hs256-key"
+        jws-alg: "HS256"
+        jwe-enc: "A128CBC-HS256"
+        jwe-alg: "A256KW"
+    - gatewayscript:
+        title: "gatewayscript"
+        version: "1.0.0"
+        source: "var path = apim.getvariable('request.path');\nvar service = apim.getvariable('service-name')\n\
+          \n// translate path\nvar realpath = path.replace('/api', '/' + service +\
+          \ '/micro');\napim.setvariable('real-path', realpath);\n\n// set JWT token\n\
+          apim.setvariable('message.headers.authorization', 'Bearer ' + apim.getvariable('jwttoken')); "
     - invoke:
-        target-url: "$(target-url)$(request.path)"
+        target-url: "$(TARGET_HOST)$(real-path)"
+    catch: []
   phase: "realized"
+  properties:
+    MICROSERVICE_NAME:
+      value: "orders-microservice"
+      description: ""
+      encoded: false
+    TARGET_HOST:
+      value: "https://us-netflix-zuul-jkwong-dev.mybluemix.net"
+      description: ""
+      encoded: false
 paths:
-  /order/{id}:
+  /orders/{id}:
     get:
       responses:
         200:
@@ -51,7 +92,7 @@ paths:
       required: true
       in: "path"
       format: "int32"
-  /order:
+  /orders:
     get:
       responses:
         200:
@@ -59,14 +100,16 @@ paths:
           schema:
             $ref: "#/definitions/order_array"
       security:
-      - order oauth scope:
-        - "order"
-        clientIdHeader: []
+      - clientIdHeader: []
+        apic-oauth-provider:
+        - "blue"
       description: "Get all my orders"
     post:
       responses:
         200:
           description: "200 OK"
+          schema:
+            $ref: "#/definitions/order"
       parameters:
       - name: "order"
         required: true
@@ -74,9 +117,9 @@ paths:
         schema:
           $ref: "#/definitions/order"
       security:
-      - order oauth scope:
-        - "order"
-        clientIdHeader: []
+      - clientIdHeader: []
+        apic-oauth-provider:
+        - "blue"
       description: "Create an order"
 definitions:
   order_array:
@@ -85,12 +128,10 @@ definitions:
       $ref: "#/definitions/order"
   order:
     properties:
-      status:
-        type: "string"
-      date:
-        type: "string"
-        format: "date-time"
-      quantity:
+      orderId:
+        type: "integer"
+        format: "int64"
+      count:
         type: "integer"
         format: "int32"
       customerId:

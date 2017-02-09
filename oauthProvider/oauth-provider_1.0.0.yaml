@@ -246,18 +246,19 @@ x-ibm-configuration:
   oauth2:
     client-type: "public"
     scopes:
-      review: "Allow Mobile app to access user's social review resource"
+      blue: "bluecompute scope"
     grants:
     - "accessCode"
     - "implicit"
+    - "password"
     identity-extraction:
-      type: "redirect"
+      type: "default-form"
       custom-form:
         url: "https://jkwong-authenticate-app.mybluemix.net/"
       redirect-url: "https://jkwong-authenticate-app.mybluemix.net/authenticate"
     authentication:
       x-ibm-authentication-url:
-        url: "https://jkwong-authenticate-app.mybluemix.net/validate"
+        url: "https://jkwong-authenticate-app.mybluemix.net/authenticate"
         tls-profile: ""
     authorization:
       type: "authenticated"
