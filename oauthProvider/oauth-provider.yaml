@@ -252,18 +252,18 @@ x-ibm-configuration:
     - "implicit"
     - "password"
     identity-extraction:
-      type: "default-form"
+      type: "custom-form"
       custom-form:
-        url: "https://jkwong-authenticate-app.mybluemix.net/"
-      redirect-url: "https://jkwong-authenticate-app.mybluemix.net/authenticate"
+        url: "https://us-micro-auth-cloudnative-integration.mybluemix.net/login.html"
+      redirect-url: "https://us-micro-auth-cloudnative-integration.mybluemix.net/authenticate"
     authentication:
       x-ibm-authentication-url:
-        url: "https://jkwong-authenticate-app.mybluemix.net/authenticate"
+        url: "https://us-micro-auth-cloudnative-integration.mybluemix.net/authenticate"
         tls-profile: ""
     authorization:
       type: "authenticated"
       custom-form:
-        url: "http://jkwong-authenticate-app.mybluemix.net/grant.html"
+        url: "https://us-micro-auth-cloudnative-integration.mybluemix.net/grant.html"
     refresh-token:
       count: 2048
       ttl: 2682000
