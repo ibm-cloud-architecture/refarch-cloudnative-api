@@ -109,7 +109,7 @@ paths:
         200:
           description: "200 OK"
           schema:
-            $ref: "#/definitions/order"
+            type: object
       parameters:
       - name: "order"
         required: true
