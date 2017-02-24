@@ -17,28 +17,20 @@
             "description": "Deploy to this space",
             "type": "string"
         },
-        "deploy-region-us": {
-            "description": "Deploy to this US region",
+        "deploy-region": {
+            "description": "Deploy to this region",
             "type": "string"
         },
-        "deploy-region-eu": {
-            "description": "Deploy to this EU region",
+        "zuul-fqdn": {
+            "description": "Zuul Proxy FQDN",
             "type": "string"
         },
-        "route-domain-us": {
-            "description": "US Route Domain",
+        "auth-fqdn": {
+            "description": "Authentication Microservice FQDN",
             "type": "string"
         },
-        "route-domain-eu": {
-            "description": "EU Route Domain",
-            "type": "string"
-        },
-        "apic-url-us": {
-            "description": "APIC US URL ",
-            "type": "string"
-        },
-        "apic-url-eu": {
-            "description": "APIC EU URL ",
+        "apic-url": {
+            "description": "APIC URL",
             "type": "string"
         },
         "apic-user": {
@@ -56,8 +48,11 @@
     },
     "required": [
         "repo-branch",
+        "deploy-region",
         "deploy-org",
         "deploy-space",
+        "zuul-fqdn",
+        "auth-fqdn",
         "apic-user",
         "apic-pass",
         "shared-secret"
@@ -88,6 +83,18 @@
         {
             "type": "text",
             "readonly": false,
+            "title": "Zuul FQDN",
+            "key": "zuul-fqdn"
+        },
+        {
+            "type": "text",
+            "readonly": false,
+            "title": "Auth Microservice FQDN",
+            "key": "auth-fqdn"
+        },
+        {
+            "type": "text",
+            "readonly": false,
             "title": "JWT Shared Secret",
             "key": "shared-secret"
         },
@@ -98,7 +105,7 @@
             "items": [
                 {
                     "type": "label",
-                    "title": ""
+                    "title": "Region"
                 },
                 {
                     "type": "label",
@@ -110,7 +117,7 @@
                 },
                 {
                     "type": "label",
-                    "title": "Deploy to (in US-South and London)"
+                    "key": "deploy-region"
                 },
                 {
                     "type": "select",
