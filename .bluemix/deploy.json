@@ -116,7 +116,7 @@
                     "title": "Space"
                 },
                 {
-                    "type": "label",
+                    "type": "select",
                     "key": "deploy-region"
                 },
                 {
