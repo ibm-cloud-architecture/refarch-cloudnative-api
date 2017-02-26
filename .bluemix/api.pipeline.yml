@@ -11,7 +11,7 @@ stages:
   - name: OPENWHISK_API_ENDPOINT
     value: ${OPENWHISK_API_ENDPOINT}
     type: text
-  - name: BXLOGiN_API_ENDPOINT
+  - name: BXLOGIN_API_ENDPOINT
     value: ${BXLOGIN_API_ENDPOINT}
     type: text
   - name: APIC_URL
