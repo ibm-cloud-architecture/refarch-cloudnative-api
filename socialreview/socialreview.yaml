@@ -65,7 +65,7 @@ x-ibm-configuration:
           value: "apic"
         - set: "hs256-key"
           value: "{ \"alg\": \"HS256\",   \"kty\": \"oct\",   \"use\": \"sig\",  \
-            \ \"k\": \"VOKJrRJ4UuKbioNd6nIHXCpYkHhxw6-0Im-AupSk9ATvUwF8wwWzLWKQZOMbke-Swo79eca4_QgCZNY0iYAKLgDfWf4lfZ9MmiAkJMVfEWt9pp9r7ycQT8WhkMtPVNULlvOI4RbhBq1dxQkY4A6-h_lVIFbxGF6uHo8KpmwM1jAWxRvKYYu0VbTYOBjQWuakS7dIq11_6maRoAEaLNWjigMKlQSeCP6kVKnpoEDxy1Rqw9sV4ttJjFDrqZRcwwIvNhqVc-eq1Ed-Uzev-HQVMTCDuHs8m0wPRNQYHP6M0fJNRae6tkhvxKEFwZKbco7om6F3VPE-xRyOT_HkpAU9HA\"\
+            \ \"k\": \"l6kHLmBzbzdBi8eznmg-nGP3pZihFpLgie0K-SKEUARXzyG5yJ7nnZoFPVL_MvoJckcoRslQZlxsNZpVruKqrP0s-m6YDaKw4Ody8lZbPmQ7wU0Mc1561J01VH55s4apg_TvnOJ6xn8sEfid3gPbvXntIb0hokVtopG5Zaam2wfyMuBlzqhQ42TtL51yZOym5NLad4_WtZUG9kM204K7OgLHFfUABpWD4ocBF7uQrebcO4cwqlVI6N_A_252TdEkfOyh_vG4yxO0h88LxaGSXj0iKFpO4q6md7bFMjzdehtPKiqWktKg02QyAjq-PRcrSiWBZfh2w6JIkU7g8kS5YQ\"\
             \ }"
         description: "Define JWT issuer claim"
     - jwt-generate:

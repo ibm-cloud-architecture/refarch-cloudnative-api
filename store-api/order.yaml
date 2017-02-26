@@ -1,8 +1,8 @@
 ---
 swagger: "2.0"
 info:
-  x-ibm-name: "catalog"
-  title: "catalog"
+  x-ibm-name: "order"
+  title: "order"
   version: "1.0.0"
 schemes:
 - "https"
@@ -13,12 +13,21 @@ consumes:
 produces:
 - "application/json"
 securityDefinitions:
+  apic-oauth-provider:
+    type: "oauth2"
+    description: ""
+    flow: "implicit"
+    authorizationUrl: "https://api.us.apiconnect.ibmcloud.com/centusibmcom-cloudnative-dev/bluecompute/oauth20/authorize"
+    scopes:
+      blue: "bluecompute scope"
   clientIdHeader:
     type: "apiKey"
     in: "header"
     name: "X-IBM-Client-Id"
 security:
 - clientIdHeader: []
+  apic-oauth-provider:
+  - "blue"
 x-ibm-configuration:
   testable: true
   enforced: true
@@ -29,29 +38,27 @@ x-ibm-configuration:
     - set-variable:
         title: "set-variable"
         actions:
+        - set: "service-name"
+          value: "$(MICROSERVICE_NAME)"
         - set: "bluecompute.iss.claim"
           value: "apic"
         - set: "hs256-key"
           value: "{ \"alg\": \"HS256\",   \"kty\": \"oct\",   \"use\": \"sig\",  \
-            \ \"k\": \"VOKJrRJ4UuKbioNd6nIHXCpYkHhxw6-0Im-AupSk9ATvUwF8wwWzLWKQZOMbke-Swo79eca4_QgCZNY0iYAKLgDfWf4lfZ9MmiAkJMVfEWt9pp9r7ycQT8WhkMtPVNULlvOI4RbhBq1dxQkY4A6-h_lVIFbxGF6uHo8KpmwM1jAWxRvKYYu0VbTYOBjQWuakS7dIq11_6maRoAEaLNWjigMKlQSeCP6kVKnpoEDxy1Rqw9sV4ttJjFDrqZRcwwIvNhqVc-eq1Ed-Uzev-HQVMTCDuHs8m0wPRNQYHP6M0fJNRae6tkhvxKEFwZKbco7om6F3VPE-xRyOT_HkpAU9HA\"\
+            \ \"k\": \"l6kHLmBzbzdBi8eznmg-nGP3pZihFpLgie0K-SKEUARXzyG5yJ7nnZoFPVL_MvoJckcoRslQZlxsNZpVruKqrP0s-m6YDaKw4Ody8lZbPmQ7wU0Mc1561J01VH55s4apg_TvnOJ6xn8sEfid3gPbvXntIb0hokVtopG5Zaam2wfyMuBlzqhQ42TtL51yZOym5NLad4_WtZUG9kM204K7OgLHFfUABpWD4ocBF7uQrebcO4cwqlVI6N_A_252TdEkfOyh_vG4yxO0h88LxaGSXj0iKFpO4q6md7bFMjzdehtPKiqWktKg02QyAjq-PRcrSiWBZfh2w6JIkU7g8kS5YQ\"\
             \ }"
-        - set: "service-name"
-          value: "$(MICROSERVICE_NAME)"
         version: "1.0.0"
-        description: "Define variables"
     - jwt-generate:
         title: "jwt-generate"
         iss-claim: "bluecompute.iss.claim"
         exp-claim: 3600
         version: "1.0.0"
-        sub-claim: ""
-        jws-alg: "HS256"
         jwt: "jwttoken"
+        jws-jwk: "hs256-key"
+        jws-alg: "HS256"
         jwe-enc: "A128CBC-HS256"
         jwe-alg: "A256KW"
-        jws-jwk: "hs256-key"
     - gatewayscript:
-        title: "gateway-script"
+        title: "gatewayscript"
         version: "1.0.0"
         source: "var path = apim.getvariable('request.path');\nvar service = apim.getvariable('service-name')\n\
           \n// translate path\nvar realpath = path.replace('/api', '/' + service +\
@@ -62,56 +69,74 @@ x-ibm-configuration:
     catch: []
   phase: "realized"
   properties:
+    MICROSERVICE_NAME:
+      value: "orders-microservice"
+      description: ""
+      encoded: false
     TARGET_HOST:
       value: "https://us-netflix-zuul-jkwong-dev.mybluemix.net"
       description: ""
       encoded: false
-    MICROSERVICE_NAME:
-      value: "catalog-microservice"
-      description: ""
-      encoded: false
-  catalogs: {}
 paths:
-  /items/{id}:
+  /orders/{id}:
     get:
       responses:
         200:
           description: "200 OK"
+          schema:
+            $ref: "#/definitions/order"
+      description: "Get my order by ID"
     parameters:
     - name: "id"
       type: "integer"
       required: true
       in: "path"
       format: "int32"
-  /items:
+  /orders:
     get:
       responses:
         200:
           description: "200 OK"
           schema:
-            $ref: "#/definitions/itemArray"
+            $ref: "#/definitions/order_array"
+      security:
+      - clientIdHeader: []
+        apic-oauth-provider:
+        - "blue"
+      description: "Get all my orders"
+    post:
+      responses:
+        200:
+          description: "200 OK"
+          schema:
+            type: object
+      parameters:
+      - name: "order"
+        required: true
+        in: "body"
+        schema:
+          $ref: "#/definitions/order"
+      security:
+      - clientIdHeader: []
+        apic-oauth-provider:
+        - "blue"
+      description: "Create an order"
 definitions:
-  itemArray:
+  order_array:
     type: "array"
     items:
-      $ref: "#/definitions/item"
-  item:
+      $ref: "#/definitions/order"
+  order:
     properties:
-      stock:
+      orderId:
+        type: "integer"
+        format: "int64"
+      count:
         type: "integer"
         format: "int32"
-      img:
+      customerId:
         type: "string"
-      imgAlt:
-        type: "string"
-      price:
-        type: "integer"
-        format: "int32"
-      description:
-        type: "string"
-      name:
-        type: "string"
-      id:
+      itemId:
         type: "integer"
         format: "int32"
     additionalProperties: false

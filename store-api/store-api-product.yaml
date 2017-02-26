@@ -1,8 +1,8 @@
 ---
 product: "1.0.0"
 info:
-  name: "catalog"
-  title: "catalog"
+  name: "store-api"
+  title: "store-api"
   version: "1.0.0"
 visibility:
   view:
@@ -16,8 +16,12 @@ visibility:
     tags: []
     orgs: []
 apis:
+  customer:
+    $ref: "customer.yaml"
   catalog:
     $ref: "catalog.yaml"
+  order:
+    $ref: "order.yaml"
 plans:
   default:
     title: "Default Plan"
