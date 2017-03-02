@@ -6,43 +6,78 @@ https://github.com/ibm-cloud-architecture/refarch-cloudnative*
 ### Deploy using Bluemix DevOps Continuous Delivery Toolchain
 [![api-toolchain](https://new-console.ng.bluemix.net/devops/graphics/create_toolchain_button.png)](https://new-console.ng.bluemix.net/devops/setup/deploy/?repository=https://github.com/ibm-cloud-architecture/refarch-cloudnative-api.git&branch=integration)
 
-This project contains the API definition for Inventory applications. It documents the Inventory items services in OpenAPI format. It will then be published to API Connect instance on Bluemix. The APIs uses DataPower gateway to invoke the REST endpoint exposed by inventory-bff-app.
+This project contains the API definitions for the entire BlueCompute application. There are three API Products: 
+- OAuth Provider
+- [Social Review](https://github.com/ibm-cloud-architecture/refarch-cloudnative-micro-socialreview)
+- Store API (consisting of [Customer](https://github.com/ibm-cloud-architecture/refarch-cloudnative-micro-customer), [Catalog](https://github.com/ibm-cloud-architecture/refarch-cloudnative-micro-inventory), and [Orders](https://github.com/ibm-cloud-architecture/refarch-cloudnative-micro-orders) APIs)
 
-The API definition is defined under the `inventory` folder.
-You should have the [inventory-bff-app](https://github.com/ibm-cloud-architecture/refarch-cloudnative-bff-inventory) project up and running before working on publishing the APIs.
+Each API is defined in OpenAPI format. Each product is published to an API Connect instance on Bluemix in the `BlueCompute` catalog. The APIs uses DataPower gateway to invoke the REST endpoint exposed by [Netflix Zuul Proxy](https://github.com/ibm-cloud-architecture/refarch-cloudnative-netflix-zuul).
+
+The API product definitions are defined in their own folders.  Each of the microservices should be provisioned before the API are usable.
 
 Once the API is published, it can be consumed by the [BlueComputeMobile](https://github.com/ibm-cloud-architecture/refarch-cloudnative-bluecompute-mobile) and [BlueComputeWeb](https://github.com/ibm-cloud-architecture/refarch-cloudnative-bluecompute-web) applications.
 
-
-The BlueCompuete reference applications uses another set of APIs - SocialReview APIs to add review comments to a product. The API definition is defined as part of the [socialreview-bff-app](https://github.com/ibm-cloud-architecture/refarch-cloudnative-bff-socialreview) project because the BFF application is implemented as IBM API Connect Loopback application and created as an API connect project. Please pay attention to the instruction below when publishing the SocialReview APIs since it is located in a different project.
-
 ## Review and Update the API
 
-To review or edit the API definition, you need to install IBM API connect developer toolkit (cli) at https://console.ng.bluemix.net/docs/cli/index.html#cli.
+To review or edit the API definitions, you need to install IBM API connect developer toolkit (cli) at https://console.ng.bluemix.net/docs/cli/index.html#cli.  
 
-  `$ cd inventory`  
+### Review and update the OAuth Provider API
+
+To review the OAuth Provider API,
+
+  `$ cd oauthProvider`  
+  `$ apic edit`  
+
+Navigate to APIs -> oauth 1.0.0.  Locate the `OAuth 2` Tab in the left navigation panel.  
+- Under `Identity Extraction` -> `Custom Form`, change the URL to match the [Auth Microservice](https://github.com/ibm-cloud-architecture/refarch-cloudnative-auth) public route, for example `https://us-auth-cloudnative-prod.mybluemix.net/login.html`.  This is the form shown to clients at the API Connect authentication URL using the `Implicit` grant, e.g. `https://api.us.apiconnect.ibmcloud.com/<org>-<space>/<catalog>/oauth20/authorize`.
+
+- Under `Authenctication` -> `Authentication URL`, change the URL to match the [Auth Microservice](https://github.com/ibm-cloud-architecture/refarch-cloudnative-auth) public route, for example `https://us-auth-cloudnative-prod.mybluemix.net/authenticate` . This is the URL that API Connect uses to validate user credentials.  See the [Auth Microservice](https://github.com/ibm-cloud-architecture/refarch-cloudnative-auth) for more information.
+
+### Review and update the Store API
+
+To review all Store APIs,
+
+  `$ cd store-api`  
   `$ apic edit`  
 
 This will open a Browser with IBM API Designer and Sign in with your Bluemix account.
-Navigate to APIs -> inventory 0.0.1. Locate the Properties tab from the left navigation panel. Click on the TARGET_HOST entry will expand the property definition.
 
-Update the default value to the hostname of your inventory-bff-app (Its application route). For example:
-  `https://inventory-bff-app.mybluemix.net`
+#### Set the `TARGET_HOST`
 
+Navigate to APIs -> catalog 1.0.0. Locate the Properties tab from the left navigation panel. Click on the TARGET_HOST entry will expand the property definition.
+
+Update the default value to the hostname of your Zuul Proxy (Its application route). For example:
+  `https://us-netflix-zuul-cloudnative-prod.mybluemix.net`
+  
 **You can update the API swagger definition file directly as well**
-Edit the `inventory.yaml` file, locate the `TARGET_HOST` property and change the value to your bff app endpoint:
+For example, edit the `catalog.yaml` file, locate the `TARGET_HOST` property and change the value to your bff app endpoint:
 
 ```
 properties:
   TARGET_HOST:
-    value: 'https://inventory-bff-app.mybluemix.net'
+    value: 'https://us-netflix-zuul-cloudnative-prod.mybluemix.net'
     description: ''
     encoded: false
 ```
 
-The solution uses JWT token to ensure only API Connect gateway can invoke Zuul proxied Microservices. Both the Inventory and SocialReview APIs are using the IBM API Connect jwt-generate activity to generate and sign the JWT token. We use HS256 algorithm and need a shared key in your API. A sample key has been provided in the git projects, but if you would like to get your own key, please follow [the security instruction](https://github.com/ibm-cloud-architecture/refarch-cloudnative/blob/master/static/security.md#generate-jwt-shared-key) to get the shared key.
+Perform the same procedure for `customer` and `orders` service.  The value of `TARGET_HOST` should be same (as all three of these microservices should be behind the same Zuul Proxy).
 
-Once you have the key, locate the definition **- set: "hs256-key"** in the inventory.yaml file, then replace the **k** property with the key generated above (replace the string VOKJrRJ4UuKbioNd6nIHXCpYkHhxw6-0Im-AupSk9ATvUwF8wwWzLWKQZOMbke-xxxx):
+#### Set the OAuth Authorization URL for OAuth Protected API
+
+For `orders` and `customer` service, the API are protected by the OAuth Provider.  The OAuth Authorization URL needs to be updated to the OAuth provider.
+
+For example, 
+1. navigate to APIs -> customer 1.0.0.  
+2. Locate the `Security Definitions`.  
+3. Under `apic-oauth-provider (OAuth)`, update the `Authorization URL` to point to the catalog host to `https://api.us.apiconnect.ibmcloud.com/<org>-<space>/<catalog>/oauth20/authorize` (e.g. `https://api.us.apiconnect.ibmcloud.com/centus-ibm-com-cloudnative-prod/bluecompute/oauth20/authorize`).  
+
+If a client attempts to call the OAuth protected API without a valid Bearer token, it will be redirected to this URL.  Repeat the above for `orders`.
+
+#### Set the JWT HS256 Shared Key
+
+The solution uses JWT token to ensure only API Connect gateway can invoke Zuul proxied Microservices. The Store API and Social Review API use the IBM API Connect jwt-generate activity to generate and sign the JWT token. We use HS256 algorithm and need a shared key in your API. A sample key has been provided in the git projects, but if you would like to get your own key, please follow [the security instruction](https://github.com/ibm-cloud-architecture/refarch-cloudnative/blob/master/static/security.md#generate-jwt-shared-key) to get the shared key.
+
+Once you have the key, locate the definition **- set: "hs256-key"** in the `customer.yaml` file, then replace the **k** property with the key generated above (replace the string VOKJrRJ4UuKbioNd6nIHXCpYkHhxw6-0Im-AupSk9ATvUwF8wwWzLWKQZOMbke-xxxx):
 
 ```
 - set-variable:
@@ -60,40 +95,77 @@ Once you have the key, locate the definition **- set: "hs256-key"** in the inven
 
 Save the file.
 
-You need to update the SocialReview APIs as well. You need to change the root directory to socialreview-bff-app:
+Repeat the above for `catalog.yaml` and `order.yaml`
 
-  `$ cd ../../refarch-cloudnative-bff-socialreview/socialreview/definitions`  
+### Review and Update the Social Review API
 
-Then, follow the same instructions above to update the socialreview.yaml file:
-- SocialReview TARGET_HOST field
-- hs256-key with key generated above
+To update and review the Social Review,
 
-Save the file.
+  `$ cd socialreview`  
+  `$ apic edit`  
+
+### Set the `TARGET_HOST`
+
+IBM API Connect proxies the Social Review microservice, which is implemented using OpenWhisk actions behind the experimental OpenWhisk API gateway.  Navigate to APIs -> socialreview 1.0.0. Locate the Properties tab from the left navigation panel. Click on the TARGET_HOST entry will expand the property definition.
+
+Update the default value to the hostname of the Openwhisk experimental API gateway.  This can be retrieved using the command
+
+```
+# wsk api-experimental list
+```
+
+For more information, see the [Social Review](https://github.com/ibm-cloud-architecture/refarch-cloudnative-micro-socialreview) git repository.
+
+#### Set the OAuth Authorization URL for OAuth Protected API
+
+The API for posting review comments are protected by the OAuth Provider.  The OAuth Authorization URL needs to be updated to the OAuth provider.
+
+1. navigate to APIs -> socialreview 1.0.0.  
+2. Locate the `Security Definitions`.  
+3. Under `apic-oauth-provider (OAuth)`, update the `Authorization URL` to point to the catalog host to `https://api.us.apiconnect.ibmcloud.com/<org>-<space>/<catalog>/oauth20/authorize` (e.g. `https://api.us.apiconnect.ibmcloud.com/centus-ibm-com-cloudnative-prod/bluecompute/oauth20/authorize`).  
+
+If a client attempts to call the OAuth protected API without a valid Bearer token, it will be redirected to this URL.
+
 
 ## Deploy to Bluemix API Connect
 
 IBM API Connect developer toolkit provides integrated command line utility to publish the APIs. To do this, you need to have your Bluemix API Connect service configured properly, if not, please reference the setup README at the root repository *https://github.com/ibm-cloud-architecture/refarch-cloudnative*
 
-Assuming deploying to API connect environment at: us.apiconnect.ibmcloud.com/orgs/centusibmcom-cloudnative-dev  
-Use the following command to deploy the Loopback application
-
-Make sure that you are under folder `refarch-cloudnative-api/inventory`, execute the following command:
+Assuming deploying to API connect environment at: us.apiconnect.ibmcloud.com/orgs/centusibmcom-cloudnative-dev.  Log in to APIC and set the correct catalog:
 
    `$ apic login --server us.apiconnect.ibmcloud.com`  
    `$ apic config:set catalog=apic-catalog://us.apiconnect.ibmcloud.com/orgs/centusibmcom-cloudnative-dev/catalogs/bluecompute`  
-   `$ apic publish inventory-product_0.0.1.yaml`
 
-This will deploy the inventory APIs to Bluemix API Connect runtime.
+### Publish SocialReview API
 
-You need to deploy the SocialReview APIs as well. You need to change the root directory to socialreview-bff-app:
+Execute the following command:
 
-  `$ cd ../../refarch-cloudnative-bff-socialreview`  
-  `$ apic config:set catalog=apic-catalog://us.apiconnect.ibmcloud.com/orgs/centusibmcom-cloudnative-dev/catalogs/bluecompute`  
-  `$ apic publish definitions/socialreview-product.yaml`  
+   ```
+   # cd oauthProvider
+   # apic publish oauth-provider-product.yaml
+   ```
+   
+This will deploy the OAuth provider APIs to Bluemix API Connect runtime.
 
+### Publish Store API
+
+Execute the following command:
+
+   ```
+   # cd store-api
+   # apic publish store-api-product.yaml
+   ```
+
+This will deploy the store APIs to Bluemix API Connect runtime.
+
+### Publish SocialReview API
+
+   ```
+   # cd socialreview
+   # apic publish socialreview-product.yaml
+   ```
 
 This will publish the SocialReview API to Bluemix API Connect.
-Next, you need to subscribe to the APIs via API Connect DeveloperPortal so that the Mobile and Web BlueCompute applications can use the APIs.
 
 ## Subscribe to the APIs in the Developer Portal
 
@@ -108,11 +180,11 @@ The API Connect Developer Portal enables API providers to build a customized con
 ![API Running](static/imgs/bluemix_16.png?raw=true)  
 7. Enter the fields of "Title" and "Description". Enter "**org.apic://example.com**" for the OAuth URI redirection page as shown below then click submit.  
 ![API Running](static/imgs/bluemix_17.png?raw=true) ( Store the client ID, you will need it later)  
-8. In the developer portal, navigate to Apps -> MobileWeb-App-Dev. Below the application, you will see a link to take you to the currently available APIs. Click on that.  
-9. Click on the Inventory ( V1.0.0 ) API.  
-10. Click "Subscribe" in the API page.  
+8. In the developer portal, navigate to `API Products`. You will see the currently available APIs. 
+9. Click on the store-api (1.0.0) API.  
+10. Click "Subscribe" in the API page.  Select the `MobileWeb-App-Dev` App.
 ![API Running](static/imgs/bluemix_18.png?raw=true)   
-11. Subscribe to the social review API as well ( you can choose the silver or gold plan)  
-12. Go back to the Apps -> BlueCompute-Mobile page, you will see that both APIs are subscribed in your Application page.  
+11. Repeat for the `oauth-provider` and `socialreview` API products.
+12. Go back to the Apps -> BlueCompute-Mobile page, you will see that all APIs are subscribed in your Application page.  
 
 Now, the APIs are ready to be consumed by the BlueCompute Mobile and Web applications.
