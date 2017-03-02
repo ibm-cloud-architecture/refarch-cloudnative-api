@@ -136,7 +136,7 @@ Assuming deploying to API connect environment at: us.apiconnect.ibmcloud.com/org
    `$ apic login --server us.apiconnect.ibmcloud.com`  
    `$ apic config:set catalog=apic-catalog://us.apiconnect.ibmcloud.com/orgs/centusibmcom-cloudnative-dev/catalogs/bluecompute`  
 
-### Publish SocialReview API
+### Publish OAuth Provider API
 
 Execute the following command:
 
